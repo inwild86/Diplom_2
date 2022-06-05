@@ -2,12 +2,15 @@ package praktikum;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 
 @RunWith(Parameterized.class)
 public class CreateUserWithEmptyFieldTest {
@@ -37,6 +40,15 @@ public class CreateUserWithEmptyFieldTest {
     @Before
     public void setUp() {
         userClient = new UserClient();
+    }
+
+    @After
+    public void tearDown() {
+        ValidatableResponse responseUserLogged = userClient.login(new User(user.email, user.password));
+        String accessToken = responseUserLogged.extract().path("accessToken");
+        if (accessToken != null) {
+            userClient.delete(accessToken);
+        }
     }
 
     @Test

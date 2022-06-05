@@ -23,7 +23,10 @@ public class CreateUserTest {
 
     @After
     public void tearDown() {
-        userClient.delete(accessToken);
+
+        if (accessToken != null) {
+            userClient.delete(accessToken);
+        }
     }
 
     @Test
@@ -55,5 +58,9 @@ public class CreateUserTest {
         assertThat(statusCodeNegativeResponse, equalTo(403));
         assertFalse(isSuccess);
         assertThat("Создан ещё один пользователь с теми же данными", message, (equalTo("User already exists")));
+        if (statusCodeNegativeResponse == 200){
+            ValidatableResponse responseUserLogged = userClient.login(new User(user.email, user.password));
+            accessToken = responseUserLogged.extract().path("accessToken");
+        }
     }
 }

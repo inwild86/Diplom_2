@@ -5,6 +5,7 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,7 +24,10 @@ public class LoginUserTest {
 
     @After
     public void tearDown() {
-        userClient.delete(accessToken);
+
+        if (accessToken != null) {
+            userClient.delete(accessToken);
+        }
     }
 
     @Test
@@ -39,7 +43,7 @@ public class LoginUserTest {
         String refreshToken = response.extract().path("refreshToken");
         String actualEmail = response.extract().path("user.email");
         String actualName = response.extract().path("user.name");
-      //  assertThat("Status code is not correct", statusCodeResponse, equalTo(200));
+        //  assertThat("Status code is not correct", statusCodeResponse, equalTo(200));
         assertTrue("User not logged in", isUserCreated);
         assertNotNull(accessToken);
         assertNotNull(refreshToken);
